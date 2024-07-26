@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       optionItem.classList.add("option");
       optionItem.innerHTML = `
         <label>
-          <input type="radio" name="question${index}" value="${choice}" checked}>
+          <input type="radio" name="question${index}" value="${choice}" checked="true"}>
           ${choice}
         </label>`;
       optionsList.appendChild(optionItem);
