@@ -1,4 +1,68 @@
 //your JS code here.
+document.addEventListener("DOMContentLoaded", () => {
+  const questionsContainer = document.getElementById("questions");
+  const submitButton = document.getElementById("submit");
+  const scoreDisplay = document.getElementById("score");
+
+  // Load progress from session storage
+  const savedProgress = JSON.parse(sessionStorage.getItem("progress")) || {};
+
+  // Render the questions
+  questions.forEach((q, index) => {
+    const questionDiv = document.createElement("div");
+    questionDiv.classList.add("question");
+    questionDiv.innerHTML = `<p>${q.question}</p>`;
+    const optionsList = document.createElement("ul");
+
+    q.choices.forEach(choice => {
+      const optionItem = document.createElement("li");
+      optionItem.classList.add("option");
+      optionItem.innerHTML = `
+        <label>
+          <input type="radio" name="question${index}" value="${choice}" ${savedProgress[`question${index}`] === choice ? "checked" : ""}>
+          ${choice}
+        </label>`;
+      optionsList.appendChild(optionItem);
+    });
+
+    questionDiv.appendChild(optionsList);
+    questionsContainer.appendChild(questionDiv);
+  });
+
+  // Save progress in session storage
+  questionsContainer.addEventListener("change", () => {
+    const formData = new FormData(questionsContainer.querySelector("form"));
+    const progress = {};
+    for (let [key, value] of formData.entries()) {
+      progress[key] = value;
+    }
+    sessionStorage.setItem("progress", JSON.stringify(progress));
+  });
+
+  // Handle submit button click
+  submitButton.addEventListener("click", () => {
+    const formData = new FormData(questionsContainer.querySelector("form"));
+    let score = 0;
+    questions.forEach((q, index) => {
+      if (formData.get(`question${index}`) === q.answer) {
+        score++;
+      }
+    });
+
+    // Save score in local storage
+    localStorage.setItem("score", score);
+
+    // Display score
+    scoreDisplay.textContent = `Your score is ${score} out of 5.`;
+  });
+
+  // Display score from local storage if exists
+  const savedScore = localStorage.getItem("score");
+  if (savedScore !== null) {
+    scoreDisplay.textContent = `Your score is ${savedScore} out of 5.`;
+  }
+});
+
 
 // Do not change code below this line
 // This code will just display the questions to the screen
